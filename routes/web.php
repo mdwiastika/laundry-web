@@ -35,15 +35,7 @@ Route::middleware(['auth'])->group(function () {
 
 // Admin Role
 Route::middleware(['auth'])->group(function () {
-    Route::resource('/customer', CustomerController::class);
-    Route::resource('/paket', PaketController::class);
+    Route::resource('/customer', CustomerController::class)->middleware('customer_ok');
+    Route::resource('/paket', PaketController::class)->middleware('is_admin');
     Route::resource('/transaksi', TransaksiController::class);
-});
-
-// Owner Role
-Route::middleware(['auth', 'is_owner'])->group(function () {
-});
-
-// Kasir Role
-Route::middleware(['auth', 'is_kasir'])->group(function () {
 });
