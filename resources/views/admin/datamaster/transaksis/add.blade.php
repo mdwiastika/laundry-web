@@ -28,15 +28,15 @@
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form action="/transaksi" method="POST">
+            <form action="{{ route('transaksi.store') }}" method="POST">
                 @csrf
               <div class="card-body">
                 <div class="form-group">
-                    <label for="id_cust">Nama Customer</label>
-                    <select name="id_cust" class="form-control" id="id_cust">
+                    <label for="id_member">Nama Member</label>
+                    <select required name="id_member" class="form-control" id="id_member">
                         <option value="">-- Pilih Customer --</option>
-                        @foreach ($customers as $customer)
-                            <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                        @foreach ($members as $member)
+                            <option value="{{ $member->id }}">{{ $member->nama }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -45,17 +45,17 @@
                     <input type="datetime-local" class="form-control" name="tanggal_order" id="tanggal_order" value="{{ old('tanggal_order') }}" placeholder="Tanggal Order" required>
                 </div>
                 <div class="form-group">
-                    <label for="paket_id">Nama Paket</label>
-                    <select name="paket_id" class="form-control" id="paket_id">
+                    <label for="id_paket">Nama Paket</label>
+                    <select required name="id_paket" class="form-control" id="id_paket">
                         <option value="">-- Pilih Paket --</option>
                         @foreach ($pakets as $paket)
-                        <option value="{{ $paket->id }}">{{ $paket->nama_paket }}</option>
+                        <option value="{{ $paket->id }}">{{ $paket->nama_paket }} ({{ $paket->harga }})</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="jumlah">Jumlah Paket</label>
-                    <input type="number" class="form-control" name="jumlah" id="jumlah" value="{{ old('jumlah') }}" placeholder="Jumlah Paket" required>
+                    <label for="qty">Qty Paket</label>
+                    <input type="number" class="form-control" name="qty" id="qty" value="{{ old('qty') }}" placeholder="Qty Paket" required>
                 </div>
                 <div class="form-group">
                     <label for="keterangan">Keterangan Paket</label>
@@ -65,7 +65,7 @@
               <!-- /.card-body -->
 
               <div class="card-footer">
-                <a href="/transaksi" class="btn btn-primary">Kembali</a>
+                <a href="{{ route('transaksi.index') }}" class="btn btn-primary">Kembali</a>
                 <button type="submit" class="btn btn-success">Submit</button>
               </div>
             </form>

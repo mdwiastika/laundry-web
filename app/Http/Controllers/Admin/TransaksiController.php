@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Customer;
 use App\Models\DetailTransaksi;
+use App\Models\Member;
 use App\Models\Paket;
 use App\Models\Transaksi;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TransaksiController extends Controller
 {
@@ -20,11 +20,12 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        $transaksis = Transaksi::all();
+        $transaksis = Transaksi::latest()->get();
         return view('admin.datamaster.transaksis.main', [
             'title' => 'Table Transaksi',
             'active' => 'Laporan',
             'transaksis' => $transaksis,
+            'outlet_name' => auth()->user()->outlet->nama,
         ]);
     }
 
@@ -35,13 +36,14 @@ class TransaksiController extends Controller
      */
     public function create()
     {
-        $customers = Customer::all();
+        $members = Member::all();
         $pakets = Paket::all();
         return view('admin.datamaster.transaksis.add', [
             'title' => 'Table Transaksi',
             'active' => 'Laporan',
-            'customers' => $customers,
+            'members' => $members,
             'pakets' => $pakets,
+            'outlet_name' => auth()->user()->outlet->nama,
         ]);
     }
 
@@ -53,40 +55,48 @@ class TransaksiController extends Controller
      */
     public function store(Request $request)
     {
-        // check member customer
-        $customer = Customer::where('id', $request->id_cust)->first();
-        $cus_diskon = 0;
-        // validate form for TransaksiTable
-        $validatedData = $request->validate([
-            'id_cust' => 'required',
-            'tanggal_order' => 'required',
-        ]);
-        if ($customer->keterangan == 'member') {
-            $cus_diskon = 10;
+        DB::beginTransaction();
+        try {
+            // check member customer
+            $member = Member::where('id', $request->id_member)->first();
+            $member_diskon = 0;
+            // validate form for TransaksiTable
+            $validatedData = $request->validate([
+                'id_member' => 'required',
+                'tanggal_order' => 'required',
+            ]);
+            if ($member->keterangan == 'member') {
+                $member_diskon = 10;
+            }
+            $validatedData['id_outlet'] = auth()->user()->id_outlet;
+            $validatedData['batas_waktu'] = Carbon::parse($request->tanggal_order)->addDays(3);
+            $validatedData['user_id'] = auth()->user()->id;
+            $validatedData['diskon'] = $member_diskon;
+            $validatedData['status'] = 'baru';
+            $validatedData['dibayar'] = 'belum_dibayar';
+            $validatedData['pajak'] = 5;
+            $validatedData['id_user'] = auth()->user()->id;
+            // create transaksi
+            $transaksi = Transaksi::create($validatedData);
+            $nomer_resi = 'KI-' . str_pad($transaksi->id, 4, '0', STR_PAD_LEFT);
+            $transaksi->update([
+                'kode_invoice' => $nomer_resi,
+            ]);
+
+            // validate form for DetailTransaksitable
+            $validatedTransaksiDetail = $request->validate([
+                'id_paket' => 'required',
+                'qty' => 'required',
+                'keterangan' => 'required',
+            ]);
+            $validatedTransaksiDetail['id_transaksi'] = $transaksi->id;
+            DetailTransaksi::create($validatedTransaksiDetail);
+            DB::commit();
+            return redirect()->route('transaksi.index')->with('success', 'Succes add transaksi');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->with('error', $th->getMessage());
         }
-
-        $validatedData['batas_waktu'] = Carbon::parse($request->tanggal_order)->addDays(3);
-        $validatedData['user_id'] = auth()->user()->id;
-        $validatedData['diskon'] = $cus_diskon;
-        $validatedData['status'] = 'baru';
-        $validatedData['dibayar'] = 'belum_dibayar';
-
-        // create transaksi
-        $transaksi = Transaksi::create($validatedData);
-        $nomer_resi = 'KI-' . str_pad($transaksi->id, 4, '0', STR_PAD_LEFT);
-        $transaksi->update([
-            'kode_invoice' => $nomer_resi,
-        ]);
-
-        // validate form for DetailTransaksitable
-        $validatedTransaksiDetail = $request->validate([
-            'paket_id' => 'required',
-            'jumlah' => 'required',
-            'keterangan' => 'required',
-        ]);
-        $validatedTransaksiDetail['transaksi_id'] = $transaksi->id;
-        DetailTransaksi::create($validatedTransaksiDetail);
-        return redirect('/transaksi')->with('message', 'Succes add transaksi');
     }
 
     /**
@@ -97,14 +107,15 @@ class TransaksiController extends Controller
      */
     public function show(Transaksi $transaksi)
     {
-        $customers = Customer::all();
+        $members = Member::all();
         $pakets = Paket::all();
         return view('admin.datamaster.transaksis.show', [
             'title' => 'Table Transaksi',
             'active' => 'Laporan',
             'transaksi' => $transaksi,
-            'customers' => $customers,
+            'members' => $members,
             'pakets' => $pakets,
+            'outlet_name' => auth()->user()->outlet->nama,
         ]);
     }
 
@@ -116,14 +127,16 @@ class TransaksiController extends Controller
      */
     public function edit(Transaksi $transaksi)
     {
-        $customers = Customer::all();
+        $members = Member::all();
         $pakets = Paket::all();
         return view('admin.datamaster.transaksis.edit', [
-            'title' => 'Edit Transaksi',
+            'title' => 'Table Transaksi',
             'active' => 'Laporan',
             'transaksi' => $transaksi,
-            'customers' => $customers,
+            'members' => $members,
             'pakets' => $pakets,
+            'outlet_name' => auth()->user()->outlet->nama,
+
         ]);
     }
 
@@ -136,40 +149,24 @@ class TransaksiController extends Controller
      */
     public function update(Request $request, Transaksi $transaksi)
     {
-        $detail_transaksi = DetailTransaksi::where('transaksi_id', $transaksi->id)->first();
-        // Update Transaksi
-        $validatedData = $request->validate([
-            'status' => 'required',
-            'dibayar' => 'required',
-        ]);
-        $denda_hari = 0;
-        if ($transaksi->customer->keterangan == 'member') {
-            $diskon_member = 10;
-        } else {
-            $diskon_member = 0;
-        }
-        if ($request->tanggal_bayar) {
-            $tanggal_bayar = new Carbon($request->tanggal_bayar);
-            $batas_waktu = new Carbon($transaksi->batas_waktu);
-            if ($tanggal_bayar->greaterThan($batas_waktu)) {
-                // Telat bayar
-                $denda_hari = Carbon::parse($tanggal_bayar)->diffInDays($batas_waktu);
-                // Total denda (jumlah tanggat hari * 4000)
-                $total_denda = 4000 * $denda_hari;
-                $awal_bayar = ($detail_transaksi->paket->harga * $detail_transaksi->jumlah) + $total_denda;
-                $total_diskon = $diskon_member / 100 * $awal_bayar;
-                $total_bayar = $awal_bayar - $total_diskon;
-                $validatedData['biaya_tambahan'] = $total_bayar;
-            } else {
-                $awal_bayar = $detail_transaksi->paket->harga * $detail_transaksi->jumlah;
-                $total_diskon = $diskon_member / 100 * $awal_bayar;
-                $total_bayar = $awal_bayar - $total_diskon;
-                $validatedData['biaya_tambahan'] = $total_bayar;
+        DB::beginTransaction();
+        try {
+            // Update Transaksi
+            $validatedData = $request->validate([
+                'status' => 'required',
+                'dibayar' => 'required',
+                'biaya_tambahan' => 'required',
+            ]);
+            if ($request->tanggal_bayar) {
+                $validatedData['tanggal_bayar'] = $request->tanggal_bayar;
             }
-            $validatedData['tanggal_bayar'] = $request->tanggal_bayar;
+            $transaksi->update($validatedData);
+            DB::commit();
+            return redirect('/transaksi')->with('success', 'Sukses update transaksi');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->with('error', $th->getMessage());
         }
-        $transaksi->update($validatedData);
-        return redirect('/transaksi')->with('message', 'Sukses update transaksi');
     }
 
     /**
@@ -180,9 +177,16 @@ class TransaksiController extends Controller
      */
     public function destroy(Transaksi $transaksi)
     {
-        $detail_transaksi = DetailTransaksi::where('transaksi_id', $transaksi->id)->first();
-        $detail_transaksi->delete();
-        $transaksi->delete();
-        return redirect('/transaksi')->with('message', 'Success delete transaksi');
+        DB::beginTransaction();
+        try {
+            $detail_transaksi = DetailTransaksi::where('id_transaksi', $transaksi->id)->first();
+            $detail_transaksi->delete();
+            $transaksi->delete();
+            DB::commit();
+            return redirect('/transaksi')->with('success', 'Success delete transaksi');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->with('error', $th->getMessage());
+        }
     }
 }

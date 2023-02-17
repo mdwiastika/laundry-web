@@ -29,7 +29,25 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <a href="/transaksi/create" class="btn btn-primary active btn-sm mb-2"><i class="fas fa-plus"></i> Tambah data</a>
+                <form action="{{ route('laporan') }}" method="GET">
+                    <div class="row mb-4">
+                        <div class="col">
+                            Range Tanggal
+                        </div>
+                        <div class="col-4">
+                            <input type="date" name="tanggal_awal" id="tanggal_awal" class="form-control" value="{{ isset($_GET['tanggal_awal']) }}">
+                        </div>
+                        <div class="col-0">
+                            -
+                        </div>
+                        <div class="col-4">
+                            <input type="date" name="tanggal_akhir" id="tanggal_akhir" class="form-control" value="{{ isset($_GET['tanggal_akhir']) }}">
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Cari</button>
+                        </div>
+                    </div>
+                </form>
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
@@ -39,7 +57,14 @@
                   <th>Tanggal Order</th>
                   <th>Dibayar</th>
                   <th>User</th>
-                  <th>Action</th>
+                  <th>Nama Outlet</th>
+                  <th>Batas Waktu</th>
+                  <th>Tanggal Bayar</th>
+                  <th>Biaya Tambahan</th>
+                  <th>Diskon</th>
+                  <th>Pajak</th>
+                  <th>Status</th>
+                  <th>Dibayar</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -51,15 +76,14 @@
                       <td>{{ $transaksi->tanggal_order }}</td>
                       <td>{{ $transaksi->dibayar }}</td>
                       <td>{{ $transaksi->user->name }}</td>
-                      <td>
-                        <a href="{{ route('transaksi.show', $transaksi->id) }}" class="btn btn-warning btn-sm text-white"><i class="fa fa-eye"></i></a>
-                        <a href="{{ route('transaksi.edit', $transaksi->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
-                        <form action="{{ route('transaksi.destroy', $transaksi->id) }}" method="POST" style="display: inline-block">
-                            @method('delete')
-                            @csrf
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus user {{ $transaksi->kode_invoice }}')"><i class="fa fa-trash"></i></button>
-                        </form>
-                      </td>
+                      <td>{{ $transaksi->outlet->nama }}</td>
+                      <td>{{ $transaksi->batas_waktu }}</td>
+                      <td>{{ $transaksi->tanggal_bayar }}</td>
+                      <td>{{ $transaksi->biaya_tambahan }}</td>
+                      <td>{{ $transaksi->diskon }}</td>
+                      <td>{{ $transaksi->pajak }}</td>
+                      <td>{{ $transaksi->status }}</td>
+                      <td>{{ $transaksi->dibayar }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -71,7 +95,14 @@
                     <th>Tanggal Order</th>
                     <th>Dibayar</th>
                     <th>User</th>
-                    <th>Action</th>
+                    <th>Nama Outlet</th>
+                    <th>Batas Waktu</th>
+                    <th>Tanggal Bayar</th>
+                    <th>Biaya Tambahan</th>
+                    <th>Diskon</th>
+                    <th>Pajak</th>
+                    <th>Status</th>
+                    <th>Dibayar</th>
                 </tr>
                 </tfoot>
               </table>

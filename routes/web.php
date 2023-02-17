@@ -43,5 +43,4 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/outlet', OutletController::class)->middleware('is_admin');
     Route::resource('/transaksi', TransaksiController::class)->middleware('customer_ok');
     Route::get('/laporan', [LaporanController::class, 'main'])->name('laporan');
-    Route::get('/laporan/{start}/{end}', [LaporanController::class, 'search'])->name('laporan-search');
 });

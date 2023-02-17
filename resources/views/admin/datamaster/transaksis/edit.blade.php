@@ -28,16 +28,16 @@
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form method="POST" action="/transaksi/{{ $transaksi->id }}">
+            <form method="POST" action="{{ route('transaksi.update', $transaksi->id) }}">
                 @method('PUT')
                 @csrf
               <div class="card-body">
                 <div class="form-group">
-                    <label for="id_cust">Nama Customer</label>
-                    <select name="id_cust" disabled class="form-control" id="id_cust">
-                        <option value="">-- Pilih Customer --</option>
-                        @foreach ($customers as $customer)
-                            <option value="{{ $customer->id }}" {{ $customer->id == $transaksi->id_cust ? 'selected' : '' }}>{{ $customer->name }}</option>
+                    <label for="id_member">Nama Member</label>
+                    <select required name="id_member" disabled class="form-control" id="id_member">
+                        <option value="">-- Pilih Member --</option>
+                        @foreach ($members as $member)
+                            <option value="{{ $member->id }}" {{ $member->id == $transaksi->id_member ? 'selected' : '' }}>{{ $member->nama }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -66,28 +66,38 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="paket_id">Nama Paket</label>
-                    <select name="paket_id" disabled class="form-control" id="paket_id">
+                    <label for="id_paket">Nama Paket</label>
+                    <select name="id_paket" disabled class="form-control" id="id_paket">
                         <option value="">-- Pilih Paket --</option>
                         @foreach ($pakets as $paket)
-                        <option value="{{ $paket->id }}" {{ $paket->id == $transaksi->detail_transaksi[0]->paket_id ? 'selected' : '' }}>{{ $paket->nama_paket }}</option>
+                        <option value="{{ $paket->id }}" {{ $paket->id == $transaksi->detail_transaksi[0]->id_paket ? 'selected' : '' }}>{{ $paket->nama_paket }} ({{ $paket->harga }})</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="jumlah">Jumlah Paket</label>
-                    <input type="number" disabled class="form-control" name="jumlah" id="jumlah" value="{{ $transaksi->detail_transaksi[0]->jumlah }}" placeholder="Jumlah Paket" required>
+                    <label for="qty">Qty Paket</label>
+                    <input type="number" disabled class="form-control" name="qty" id="qty" value="{{ $transaksi->detail_transaksi[0]->qty }}" placeholder="Qty Paket" required>
                 </div>
                 <div class="form-group">
                     <label for="keterangan">Keterangan Paket</label>
                     <input type="text" disabled class="form-control" name="keterangan" id="keterangan" value="{{ $transaksi->detail_transaksi[0]->keterangan }}" placeholder="Keterangan Paket" required>
                 </div>
+                <h5 class="text-danger mt-3">Pajak: {{ $transaksi->pajak }}%</h5>
+                <h5 class="text-danger">Diskon: {{ $transaksi->diskon }}% ({{ $transaksi->member->keterangan }})</h5>
+                <h4>Harga: Rp {{ number_format($transaksi->detail_transaksi[0]->paket->harga, 0, '.', ',') }} x <span class="text-primary">{{ $transaksi->detail_transaksi[0]->qty }} buah</span></h4>
+                @php
+                    $total_pajak = $transaksi->pajak / 100 * ($transaksi->detail_transaksi[0]->paket->harga * $transaksi->detail_transaksi[0]->qty);
+                    $total_diskon = ($transaksi->diskon / 100) * (($transaksi->detail_transaksi[0]->paket->harga * $transaksi->detail_transaksi[0]->qty) + $total_pajak);
+                    $total_bayar = ($transaksi->detail_transaksi[0]->paket->harga * $transaksi->detail_transaksi[0]->qty + $total_pajak) - $total_diskon;
+                @endphp
+                <h4 class="text-dark mt-3">Total: Rp {{ number_format( $total_bayar,0, '.', ',') }}</h4>
+                <input type="hidden" value="{{ $total_bayar }}" name="biaya_tambahan">
             </div>
               <!-- /.card-body -->
 
               <div class="card-footer">
-                <button type="submit" class="btn btn-warning text-white">Edit</button>
-                <a href="/transaksi" class="btn btn-primary">Kembali</a>
+                <button type="submit" class="btn btn-warning text-white">Bayar</button>
+                <a href="{{ route('transaksi.index') }}" class="btn btn-primary">Kembali</a>
               </div>
             </form>
           </div>

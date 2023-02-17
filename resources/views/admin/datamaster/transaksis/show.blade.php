@@ -31,11 +31,11 @@
             <form>
               <div class="card-body">
                 <div class="form-group">
-                    <label for="id_cust">Nama Customer</label>
-                    <select name="id_cust" class="form-control" id="id_cust" disabled>
+                    <label for="id_member">Nama Member</label>
+                    <select name="id_member" class="form-control" id="id_member" disabled>
                         <option value="">-- Pilih Customer --</option>
-                        @foreach ($customers as $customer)
-                            <option value="{{ $customer->id }}" {{ $customer->id == $transaksi->id_cust ? 'selected' : '' }}>{{ $customer->name }}</option>
+                        @foreach ($members as $member)
+                            <option value="{{ $member->id }}" {{ $member->id == $transaksi->id_member ? 'selected' : '' }}>{{ $member->nama }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -80,13 +80,13 @@
                     <select name="paket_id" disabled class="form-control" id="paket_id">
                         <option value="">-- Pilih Paket --</option>
                         @foreach ($pakets as $paket)
-                        <option value="{{ $paket->id }}" {{ $paket->id == $transaksi->detail_transaksi[0]->paket_id ? 'selected' : '' }}>{{ $paket->nama_paket }}</option>
+                        <option value="{{ $paket->id }}" {{ $paket->id == $transaksi->detail_transaksi[0]->id_paket ? 'selected' : '' }}>{{ $paket->nama_paket }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="jumlah">Jumlah Paket</label>
-                    <input disabled type="number" class="form-control" name="jumlah" id="jumlah" value="{{ $transaksi->detail_transaksi[0]->jumlah }}" placeholder="Jumlah Paket" required>
+                    <input disabled type="number" class="form-control" name="jumlah" id="jumlah" value="{{ $transaksi->detail_transaksi[0]->qty }}" placeholder="Jumlah Paket" required>
                 </div>
                 <div class="form-group">
                     <label for="keterangan">Keterangan Paket</label>
@@ -96,7 +96,7 @@
               <!-- /.card-body -->
 
               <div class="card-footer">
-                <a href="/transaksi" class="btn btn-primary">Kembali</a>
+                <a href="{{ route('transaksi.index') }}" class="btn btn-primary">Kembali</a>
               </div>
             </form>
           </div>

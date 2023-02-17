@@ -1,6 +1,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="../../index3.html" class="brand-link">
+    <a href="{{ route('dashboard') }}" class="brand-link">
       <img src="{{ asset('/admin/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">Outlet {{ $outlet_name }}</span>
     </a>
@@ -104,18 +104,18 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+                @if (in_array(auth()->user()->role, ['admin', 'kasir']))
+                <li class="nav-item">
+                    <a href="{{ route('transaksi.index') }}" class="nav-link {{ $title == 'Table Transaksi' ? 'active' : '' }}">
+                        <i class="fas fa-money-bill-alt nav-icon ml-3" style="fill: white"></i>
+                      <p>Table Transaksi</p>
+                    </a>
+                  </li>
+                @endif
               <li class="nav-item">
                 <a href="{{ route('laporan') }}" class="nav-link {{ $title == 'Laporan Pembelian' ? 'active' : '' }}">
                     <i class="fas fa-folder-open ml-3"></i>
                   <p>Laporan Pembelian</p>
-                </a>
-              </li>
-            </ul>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{ route('transaksi.index') }}" class="nav-link {{ $title == 'Table Transaksi' ? 'active' : '' }}">
-                    <i class="fas fa-money-bill-wave nav-icon ml-3"></i>
-                  <p>Table Transaksi</p>
                 </a>
               </li>
             </ul>
