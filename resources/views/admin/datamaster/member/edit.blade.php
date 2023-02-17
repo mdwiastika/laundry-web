@@ -28,36 +28,36 @@
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form action="/customer/{{ $customer->id }}" method="POST">
+            <form action="{{ route('member.update', $member->id) }}" method="POST">
                 @method('PUT')
                 @csrf
                 <div class="card-body">
                 <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" name="name" id="name" min="1" max="" value="{{ $customer->name }}" placeholder="name" required>
+                    <label for="nama">Nama</label>
+                    <input type="text" class="form-control" name="nama" id="nama" value="{{ $member->nama }}" placeholder="nama" required>
                 </div>
                 <div class="form-group">
                     <label for="alamat">Alamat</label>
-                    <input type="text" class="form-control" name="alamat" id="alamat" min="1" max="" value="{{ $customer->alamat }}" placeholder="alamat" required>
+                    <input type="text" class="form-control" name="alamat" id="alamat" value="{{ $member->alamat }}" placeholder="alamat" required>
                 </div>
                 <div class="form-group">
                     <label for="jenis_kelamin">Jenis Kelamin</label>
-                    <select name="jenis_kelamin" class="form-control" id="jenis_kelamin">
+                    <select name="jenis_kelamin" class="form-control" id="jenis_kelamin" required>
                         <option value="">-- Pilih Gender --</option>
-                        <option value="Pria"{{ $customer->jenis_kelamin == 'Pria' ? 'selected' : '' }}>Pria</option>
-                        <option value="Wanita" {{ $customer->jenis_kelamin == 'Wanita' ? 'selected' : '' }}>Wanita</option>
+                        <option value="Laki-Laki"{{ $member->jenis_kelamin == 'Laki-Laki' ? 'selected' : '' }}>Laki-Laki</option>
+                        <option value="Perempuan" {{ $member->jenis_kelamin == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="telepon">Telepon</label>
-                    <input type="text" class="form-control" name="telepon" id="telepon" min="1" max="" value="{{ $customer->telepon }}" placeholder="telepon" required>
+                    <label for="tlp">Telepon</label>
+                    <input type="text" class="form-control" name="tlp" id="tlp" value="{{ $member->tlp }}" placeholder="telepon" required>
                 </div>
                 <div class="form-group">
                     <label for="keterangan">Keterangan</label>
-                    <select name="keterangan" class="form-control" id="keterangan">
+                    <select name="keterangan" class="form-control" id="keterangan" required>
                         <option value="">-- Pilih Keterangan --</option>
-                        <option value="member" {{ $customer->keterangan == 'member' ? 'selected' : '' }}>Member</option>
-                        <option value="non-member" {{ $customer->keterangan == 'non-member' ? 'selected' : '' }}>Non Member</option>
+                        <option value="member" {{ $member->keterangan == 'member' ? 'selected' : '' }}>Member</option>
+                        <option value="non-member" {{ $member->keterangan == 'non-member' ? 'selected' : '' }}>Non Member</option>
                     </select>
                 </div>
               </div>
@@ -65,7 +65,7 @@
 
               <div class="card-footer">
                 <button type="submit" class="btn btn-warning text-white">Update</button>
-                <a href="/customer" class="btn btn-primary">Kembali</a>
+                <a href="{{ route('member.index') }}" class="btn btn-primary">Kembali</a>
               </div>
             </form>
           </div>

@@ -29,35 +29,31 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <a href="/customer/create" class="btn btn-primary active btn-sm mb-2"><i class="fas fa-plus"></i> Tambah data</a>
+                <a href="{{ route('member.create') }}" class="btn btn-primary active btn-sm mb-2"><i class="fas fa-plus"></i> Tambah data</a>
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
                   <th>No</th>
                   <th>Nama Lengkap</th>
                   <th>Alamat</th>
-                  <th>Jenis Kelamin</th>
-                  <th>Telepon</th>
                   <th>Keterangan</th>
                   <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($customers as $key => $customer)    
+                    @foreach ($members as $key => $member)
                     <tr>
                       <td>{{ ($key+1) }}</td>
-                      <td>{{ $customer->name }}</td>
-                      <td>{{ $customer->alamat }}</td>
-                      <td>{{ $customer->jenis_kelamin }}</td>
-                      <td>{{ $customer->telepon }}</td>
-                      <td>{{ $customer->keterangan }}</td>
+                      <td>{{ $member->nama }}</td>
+                      <td>{{ $member->alamat }}</td>
+                      <td>{{ $member->keterangan }}</td>
                       <td>
-                        <a href="/customer/{{ $customer->id }}" class="btn btn-warning btn-sm text-white"><i class="fa fa-eye"></i></a>
-                        <a href="/customer/{{ $customer->id }}/edit" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
-                        <form action="/customer/{{ $customer->id }}" method="POST" style="display: inline-block">
+                        <a href="{{ route('member.show', $member->id) }}" class="btn btn-warning btn-sm text-white"><i class="fa fa-eye"></i></a>
+                        <a href="{{ route('member.edit', $member->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
+                        <form action="{{ route('member.destroy', $member->id) }}" method="POST" style="display: inline-block">
                             @method('delete')
                             @csrf
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus user {{ $customer->name }}')"><i class="fa fa-trash"></i></button>
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus user {{ $member->name }}')"><i class="fa fa-trash"></i></button>
                         </form>
                       </td>
                     </tr>
@@ -65,13 +61,11 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                  <th>No</th>
-                  <th>Nama Lengkap</th>
-                  <th>Alamat</th>
-                  <th>Jenis Kelamin</th>
-                  <th>Telepon</th>
-                  <th>Keterangan</th>
-                  <th>Action</th>
+                    <th>No</th>
+                    <th>Nama Lengkap</th>
+                    <th>Alamat</th>
+                    <th>Keterangan</th>
+                    <th>Action</th>
                 </tr>
                 </tfoot>
               </table>
@@ -85,7 +79,7 @@
       <!-- /.row -->
     </div>
     <!-- /.container-fluid -->
-  </section>    
+  </section>
   @section('script')
   <script>
     $(function () {

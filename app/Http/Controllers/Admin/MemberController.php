@@ -15,7 +15,13 @@ class MemberController extends Controller
      */
     public function index()
     {
-        //
+        $members = Member::latest()->get();
+        return view('admin.datamaster.member.main', [
+            'title' => 'Table Member',
+            'active' => 'datamaster',
+            'outlet_name' => auth()->user()->outlet->nama,
+            'members' => $members,
+        ]);
     }
 
     /**
@@ -25,7 +31,11 @@ class MemberController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.datamaster.member.add', [
+            'title' => 'Table Member',
+            'active' => 'datamaster',
+            'outlet_name' => auth()->user()->outlet->nama,
+        ]);
     }
 
     /**
@@ -36,7 +46,19 @@ class MemberController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $validatedData = $request->validate([
+                'nama' => 'required|unique:members',
+                'alamat' => 'required',
+                'jenis_kelamin' => 'required',
+                'tlp' => 'required',
+                'keterangan' => 'required',
+            ]);
+            Member::create($validatedData);
+            return redirect()->route('member.index')->with('success', 'Sukses insert data member');
+        } catch (\Throwable $th) {
+            return redirect()->back()->withInput()->with('error', $th->getMessage());
+        }
     }
 
     /**
@@ -47,7 +69,12 @@ class MemberController extends Controller
      */
     public function show(Member $member)
     {
-        //
+        return view('admin.datamaster.member.show', [
+            'title' => 'Table Member',
+            'active' => 'datamaster',
+            'outlet_name' => auth()->user()->outlet->nama,
+            'member' => $member,
+        ]);
     }
 
     /**
@@ -58,7 +85,12 @@ class MemberController extends Controller
      */
     public function edit(Member $member)
     {
-        //
+        return view('admin.datamaster.member.edit', [
+            'title' => 'Table Member',
+            'active' => 'datamaster',
+            'outlet_name' => auth()->user()->outlet->nama,
+            'member' => $member,
+        ]);
     }
 
     /**
@@ -70,7 +102,19 @@ class MemberController extends Controller
      */
     public function update(Request $request, Member $member)
     {
-        //
+        try {
+            $validatedData = $request->validate([
+                'nama' => $member->nama == $request->nama ? 'required' : 'required|unique:members',
+                'alamat' => 'required',
+                'jenis_kelamin' => 'required',
+                'tlp' => 'required',
+                'keterangan' => 'required',
+            ]);
+            $member->update($validatedData);
+            return redirect()->route('member.index')->with('success', 'Sukses update member');
+        } catch (\Throwable $th) {
+            return redirect()->back()->withInput()->with('error', $th->getMessage());
+        }
     }
 
     /**
@@ -81,6 +125,11 @@ class MemberController extends Controller
      */
     public function destroy(Member $member)
     {
-        //
+        try {
+            $member->delete();
+            return redirect()->route('member.index')->with('success', 'Sukses delete member');
+        } catch (\Throwable $th) {
+            return redirect()->back()->withInput()->with('error', $th->getMessage());
+        }
     }
 }

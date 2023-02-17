@@ -32,7 +32,7 @@ class PaketController extends Controller
     public function create()
     {
         return view('admin.datamaster.pakets.add', [
-            'title' => 'Create Paket',
+            'title' => 'Table Paket',
             'active' => 'datamaster',
             'outlet_name' => auth()->user()->outlet->nama,
             'outlet_name' => auth()->user()->outlet->nama,
@@ -70,7 +70,7 @@ class PaketController extends Controller
     public function show(Paket $paket)
     {
         return view('admin.datamaster.pakets.show', [
-            'title' => 'Show Paket',
+            'title' => 'Table Paket',
             'active' => 'datamaster',
             'paket' => $paket,
             'outlet_name' => auth()->user()->outlet->nama,
@@ -86,7 +86,7 @@ class PaketController extends Controller
     public function edit(Paket $paket)
     {
         return view('admin.datamaster.pakets.edit', [
-            'title' => 'Edit Paket',
+            'title' => 'Table Paket',
             'active' => 'datamaster',
             'paket' => $paket,
             'outlet_name' => auth()->user()->outlet->nama,
