@@ -11,10 +11,10 @@ class DetailTransaksi extends Model
     protected $guarded = ['id'];
     public function transaksi()
     {
-        return $this->belongsTo(Transaksi::class, 'transaksi_id', 'id');
+        return $this->belongsTo(Transaksi::class, 'id_transaksi', 'id');
     }
     public function paket()
     {
-        return $this->belongsTo(Paket::class, 'paket_id', 'id');
+        return $this->belongsTo(Paket::class, 'id_paket', 'id');
     }
 }

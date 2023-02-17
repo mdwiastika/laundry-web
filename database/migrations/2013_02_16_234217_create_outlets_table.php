@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('detail_transaksis', function (Blueprint $table) {
+        Schema::create('outlets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_transaksi')->constrained('transaksis')->onDelete('cascade');
-            $table->foreignId('id_paket')->constrained('pakets')->onDelete('cascade');
-            $table->integer('qty');
-            $table->string('keterangan');
+            $table->string('nama');
+            $table->string('alamat');
+            $table->string('tlp');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detail_transaksis');
+        Schema::dropIfExists('outlets');
     }
 };

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Outlet;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,8 +18,10 @@ class AuthController extends Controller
     }
     public function register()
     {
+        $outlets = Outlet::all();
         return view('register', [
             'title' => 'Form Register',
+            'outlets' => $outlets,
         ]);
     }
     public function postLogin(Request $request)
@@ -31,6 +34,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
             return redirect()->intended('dashboard');
         }
+        return redirect('/login')->with('error', 'Username atau Password salah');
     }
     public function postRegister(Request $request)
     {
@@ -38,12 +42,25 @@ class AuthController extends Controller
             'name' => 'required',
             'username' => 'required',
             'email' => 'required|unique:users',
-            'password' => 'required'
+            'password' => 'required',
+            'id_outlet' => 'required',
         ]);
+        if ($request->id_outlet == '-') {
+            $validatedData['id_outlet'] = 1;
+        }
         $validatedData['password'] = Hash::make($request->password);
-        $validatedData['role'] = 'owner';
-        User::create($validatedData);
+        $check_count_user = User::count();
+        if ($check_count_user == 0) {
+            $validatedData['role'] = 'admin';
+        } elseif ($check_count_user == 1) {
+            $validatedData['role'] = 'kasir';
+        } elseif ($check_count_user >= 2) {
+            $validatedData['role'] = 'owner';
+        } else {
+            return redirect('register')->with('error', 'Unexpected count user');
+        }
 
+        User::create($validatedData);
         return redirect('login')->with('message', 'Sukses Register User');
     }
     public function logout(Request $request)

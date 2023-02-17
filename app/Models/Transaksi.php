@@ -9,16 +9,20 @@ class Transaksi extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    public function customer()
+    public function member()
     {
-        return $this->belongsTo(Customer::class, 'id_cust', 'id');
+        return $this->belongsTo(Member::class, 'id_member', 'id');
     }
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'id_user', 'id');
     }
     public function detail_transaksi()
     {
-        return $this->hasMany(DetailTransaksi::class, 'transaksi_id', 'id');
+        return $this->hasMany(DetailTransaksi::class, 'id_transaksi', 'id');
+    }
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class, 'id_outlet', 'id');
     }
 }

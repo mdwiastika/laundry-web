@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('pakets', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_outlet')->constrained('outlets')->onDelete('cascade');
             $table->enum('jenis', ['kiloan', 'selimut', 'bedcover', 'kaos', 'lain']);
             $table->string('nama_paket');
             $table->integer('harga');

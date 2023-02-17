@@ -69,16 +69,6 @@
       <!-- /.row -->
     </div><!-- /.container-fluid -->
   </section>
-  <script>
-    const current_date = new Date();
-    const date = current_date.getDate();
-    const month = current_date.getMonth();
-    const year = current_date.getFullYear();
-    const input_checkin = document.querySelector('[name="check_in"]');
-    const input_checkout = document.querySelector('[name="check_out"]');
-    input_checkin.min = `${year}-${month+1}-${date}`;
-    input_checkout.min = `${year}-${month+1}-${date}`;
-  </script>
   @section('script')
   @endsection
 @endsection

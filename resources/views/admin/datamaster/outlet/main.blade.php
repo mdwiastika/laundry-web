@@ -29,45 +29,31 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <a href="/transaksi/create" class="btn btn-primary active btn-sm mb-2"><i class="fas fa-plus"></i> Tambah data</a>
+                <a href="{{ route('outlet.create') }}" class="btn btn-primary active btn-sm mb-2"><i class="fas fa-plus"></i> Tambah data</a>
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
                   <th>No</th>
-                  <th>Kode Invoice</th>
-                  <th>Customer</th>
-                  <th>Tanggal Order</th>
-                  <th>Batas Waktu</th>
-                  <th>Tanggal Bayar</th>
-                  <th>Biaya Tambahan</th>
-                  <th>Diskon</th>
-                  <th>Status</th>
-                  <th>Dibayar</th>
-                  <th>User</th>
+                  <th>Nama</th>
+                  <th>Alamat</th>
+                  <th>Telepon</th>
                   <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($transaksis as $key => $transaksi)
+                    @foreach ($outlets as $key => $outlet)
                     <tr>
                       <td>{{ ($key+1) }}</td>
-                      <td>{{ $transaksi->kode_invoice }}</td>
-                      <td>{{ $transaksi->customer->name }}</td>
-                      <td>{{ $transaksi->tanggal_order }}</td>
-                      <td>{{ $transaksi->batas_waktu }}</td>
-                      <td>{{ $transaksi->tanggal_bayar }}</td>
-                      <td>Rp {{ number_format($transaksi->biaya_tambahan, 0, '.', ',') }}</td>
-                      <td>{{ $transaksi->diskon }}%</td>
-                      <td>{{ $transaksi->status }}</td>
-                      <td>{{ $transaksi->dibayar }}</td>
-                      <td>{{ $transaksi->user->name }}</td>
+                      <td>{{ $outlet->nama }}</td>
+                      <td>{{ $outlet->alamat }}</td>
+                      <td>{{ $outlet->tlp }}</td>
                       <td>
-                        <a href="/transaksi/{{ $transaksi->id }}" class="btn btn-warning btn-sm text-white"><i class="fa fa-eye"></i></a>
-                        <a href="/transaksi/{{ $transaksi->id }}/edit" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
-                        <form action="/transaksi/{{ $transaksi->id }}" method="POST" style="display: inline-block">
+                        <a href="{{ route('outlet.show', $outlet->id) }}" class="btn btn-warning btn-sm text-white"><i class="fa fa-eye"></i></a>
+                        <a href="{{ route('outlet.edit', $outlet->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
+                        <form action="{{ route('outlet.destroy', $outlet->id) }}" method="POST" style="display: inline-block">
                             @method('delete')
                             @csrf
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus user {{ $transaksi->name }}')"><i class="fa fa-trash"></i></button>
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus outlet {{ $outlet->nama }}')"><i class="fa fa-trash"></i></button>
                         </form>
                       </td>
                     </tr>
@@ -76,16 +62,9 @@
                 <tfoot>
                 <tr>
                     <th>No</th>
-                    <th>Kode Invoice</th>
-                    <th>Customer</th>
-                    <th>Tanggal Order</th>
-                    <th>Batas Waktu</th>
-                    <th>Tanggal Bayar</th>
-                    <th>Biaya Tambahan</th>
-                    <th>Diskon</th>
-                    <th>Status</th>
-                    <th>Dibayar</th>
-                    <th>User</th>
+                    <th>Nama</th>
+                    <th>Alamat</th>
+                    <th>Telepon</th>
                     <th>Action</th>
                 </tr>
                 </tfoot>
