@@ -28,9 +28,7 @@
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form action="{{ route('user.update', $user->id) }}" method="POST">
-                @csrf
-                @method('PUT')
+            <form>
               <div class="card-body">
                 <div class="form-group">
                     <label for="name">Name</label>

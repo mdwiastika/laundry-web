@@ -14,7 +14,7 @@ class OutletController extends Controller
      */
     public function index()
     {
-        $outlets = Outlet::all();
+        $outlets = Outlet::latest()->get();
         return view('admin.datamaster.outlet.main', [
             'title' => 'Table Outlet',
             'active' => 'datamaster',
@@ -54,7 +54,7 @@ class OutletController extends Controller
             Outlet::create($validatedData);
             return redirect()->route('outlet.index')->with('success', 'Sukses insert outlet');
         } catch (\Throwable $th) {
-            return redirect()->route('outlet.index')->with('error', $th->getMessage());
+            return redirect()->route('outlet.create')->withInput()->with('error', $th->getMessage());
         }
     }
 
@@ -108,7 +108,7 @@ class OutletController extends Controller
             $outlet->update($validatedData);
             return redirect()->route('outlet.index')->with('success', 'Sukses update outlet');
         } catch (\Throwable $th) {
-            return redirect()->route('outlet.index')->with('error', $th->getMessage());
+            return redirect()->back()->withInput()->with('error', $th->getMessage());
         }
     }
 

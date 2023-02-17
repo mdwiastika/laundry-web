@@ -17,7 +17,7 @@ class UserController extends Controller
     public function index()
     {
         // dd('halo');
-        $users = User::all();
+        $users = User::latest()->get();
         return view('admin.datamaster.user.main', [
             'title' => 'Table User',
             'active' => 'datamaster',
@@ -111,7 +111,7 @@ class UserController extends Controller
             $user->update($validatedData);
             return redirect()->route('user.index')->with('success', 'Sukses update user');
         } catch (\Throwable $th) {
-            return redirect()->route('user.index')->with('error', $th->getMessage());
+            return redirect()->back()->withInput()->with('error', $th->getMessage());
         }
     }
 
