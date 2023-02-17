@@ -29,7 +29,7 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <a href="/paket/create" class="btn btn-primary active btn-sm mb-2"><i class="fas fa-plus"></i> Tambah data</a>
+                <a href="{{ route('paket.create') }}" class="btn btn-primary active btn-sm mb-2"><i class="fas fa-plus"></i> Tambah data</a>
               <table id="example1" class="table table-bordered table-striped">
                 <thead>
                 <tr>
@@ -41,16 +41,16 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($pakets as $key => $paket)    
+                    @foreach ($pakets as $key => $paket)
                     <tr>
                       <td>{{ ($key+1) }}</td>
                       <td>{{ $paket->nama_paket }}</td>
                       <td>{{ $paket->jenis }}</td>
                       <td>Rp {{ number_format($paket->harga, 0, '.', ',') }}</td>
                       <td>
-                        <a href="/paket/{{ $paket->id }}" class="btn btn-warning btn-sm text-white"><i class="fa fa-eye"></i></a>
-                        <a href="/paket/{{ $paket->id }}/edit" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
-                        <form action="/paket/{{ $paket->id }}" method="POST" style="display: inline-block">
+                        <a href="{{ route('paket.show', $paket->id) }}" class="btn btn-warning btn-sm text-white"><i class="fa fa-eye"></i></a>
+                        <a href="{{ route('paket.edit', $paket->id) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a>
+                        <form action="{{ route('paket.destroy', $paket->id) }}" method="POST" style="display: inline-block">
                             @method('delete')
                             @csrf
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus user {{ $paket->nama_paket }}')"><i class="fa fa-trash"></i></button>
@@ -79,7 +79,7 @@
       <!-- /.row -->
     </div>
     <!-- /.container-fluid -->
-  </section>    
+  </section>
   @section('script')
   <script>
     $(function () {

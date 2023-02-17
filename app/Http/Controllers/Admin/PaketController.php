@@ -15,11 +15,12 @@ class PaketController extends Controller
      */
     public function index()
     {
-        $pakets = Paket::all();
+        $pakets = Paket::where('id_outlet', auth()->user()->id_outlet)->latest()->get();
         return view('admin.datamaster.pakets.main', [
             'title' => 'Table Paket',
             'active' => 'datamaster',
             'pakets' => $pakets,
+            'outlet_name' => auth()->user()->outlet->nama,
         ]);
     }
 
@@ -33,6 +34,8 @@ class PaketController extends Controller
         return view('admin.datamaster.pakets.add', [
             'title' => 'Create Paket',
             'active' => 'datamaster',
+            'outlet_name' => auth()->user()->outlet->nama,
+            'outlet_name' => auth()->user()->outlet->nama,
         ]);
     }
 
@@ -50,10 +53,11 @@ class PaketController extends Controller
                 'nama_paket' => 'required|unique:pakets',
                 'harga' => 'required',
             ]);
+            $validatedData['id_outlet'] = auth()->user()->id_outlet;
             Paket::create($validatedData);
-            return redirect('/paket')->with('message', 'Success add paket');
+            return redirect('/paket')->with('success', 'Success add paket');
         } catch (\Throwable $th) {
-            return back()->with('message', $th->getMessage());
+            return back()->with('error', $th->getMessage());
         }
     }
 
@@ -69,6 +73,7 @@ class PaketController extends Controller
             'title' => 'Show Paket',
             'active' => 'datamaster',
             'paket' => $paket,
+            'outlet_name' => auth()->user()->outlet->nama,
         ]);
     }
 
@@ -84,6 +89,7 @@ class PaketController extends Controller
             'title' => 'Edit Paket',
             'active' => 'datamaster',
             'paket' => $paket,
+            'outlet_name' => auth()->user()->outlet->nama,
         ]);
     }
 
@@ -99,13 +105,13 @@ class PaketController extends Controller
         try {
             $validatedData = $request->validate([
                 'jenis' => 'required',
-                'nama_paket' => 'required|unique:pakets',
+                'nama_paket' => $paket->nama_paket == $request->nama_paket ? 'required' : 'required|unique:pakets',
                 'harga' => 'required',
             ]);
             $paket->update($validatedData);
-            return redirect('/paket')->with('message', 'Success edit paket');
+            return redirect('/paket')->with('success', 'Success edit paket');
         } catch (\Throwable $th) {
-            return back()->with('message', $th->getMessage());
+            return back()->with('error', $th->getMessage());
         }
     }
 
@@ -119,9 +125,9 @@ class PaketController extends Controller
     {
         try {
             $paket->delete();
-            return redirect('/paket')->with('message', 'Success delete paket');
+            return redirect('/paket')->with('success', 'Success delete paket');
         } catch (\Throwable $th) {
-            return back()->with('message', $th->getMessage());
+            return back()->with('error', $th->getMessage());
         }
     }
 }

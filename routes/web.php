@@ -1,15 +1,13 @@
 <?php
 
-use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\LaporanController;
+use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Admin\OutletController;
 use App\Http\Controllers\Admin\PaketController;
 use App\Http\Controllers\Admin\TransaksiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\LaporanController;
-use App\Http\Controllers\MemberController;
-use App\Http\Controllers\OutletController;
-use App\Models\DetailTransaksi;
 use Illuminate\Support\Facades\Route;
 
 /*

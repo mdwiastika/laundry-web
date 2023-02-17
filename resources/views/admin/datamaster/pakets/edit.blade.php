@@ -28,7 +28,7 @@
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form action="/paket/{{ $paket->id }}" method="POST">
+            <form action="{{ route('paket.update', $paket->id) }}" method="POST">
                 @method('PUT')
                 @csrf
               <div class="card-body">
@@ -55,7 +55,7 @@
               <!-- /.card-body -->
 
               <div class="card-footer">
-                <a href="/paket" class="btn btn-primary">Kembali</a>
+                <a href="{{ route('paket.index') }}" class="btn btn-primary">Kembali</a>
                 <button type="submit" class="btn btn-success">Submit</button>
               </div>
             </form>

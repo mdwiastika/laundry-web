@@ -53,7 +53,7 @@
               <!-- /.card-body -->
 
               <div class="card-footer">
-                <a href="/paket" class="btn btn-primary">Kembali</a>
+                <a href="{{ route('paket.index') }}" class="btn btn-primary">Kembali</a>
               </div>
             </form>
           </div>

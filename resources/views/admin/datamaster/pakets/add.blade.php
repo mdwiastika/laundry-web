@@ -28,7 +28,7 @@
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form action="/paket" method="POST">
+            <form action="{{ route('paket.store') }}" method="POST">
                 @csrf
               <div class="card-body">
                 <div class="form-group">
@@ -54,7 +54,7 @@
               <!-- /.card-body -->
 
               <div class="card-footer">
-                <a href="/paket" class="btn btn-primary">Kembali</a>
+                <a href="{{ route('paket.index') }}" class="btn btn-primary">Kembali</a>
                 <button type="submit" class="btn btn-success">Submit</button>
               </div>
             </form>
