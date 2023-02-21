@@ -57,21 +57,14 @@ class TransaksiController extends Controller
     {
         DB::beginTransaction();
         try {
-            // check member customer
-            $member = Member::where('id', $request->id_member)->first();
-            $member_diskon = 0;
             // validate form for TransaksiTable
             $validatedData = $request->validate([
                 'id_member' => 'required',
                 'tanggal_order' => 'required',
             ]);
-            if ($member->keterangan == 'member') {
-                $member_diskon = 10;
-            }
             $validatedData['id_outlet'] = auth()->user()->id_outlet;
             $validatedData['batas_waktu'] = Carbon::parse($request->tanggal_order)->addDays(3);
             $validatedData['user_id'] = auth()->user()->id;
-            $validatedData['diskon'] = $member_diskon;
             $validatedData['status'] = 'baru';
             $validatedData['dibayar'] = 'belum_dibayar';
             $validatedData['pajak'] = 5;
