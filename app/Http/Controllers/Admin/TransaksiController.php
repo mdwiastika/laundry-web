@@ -127,6 +127,10 @@ class TransaksiController extends Controller
      */
     public function edit(Transaksi $transaksi)
     {
+        $total_pajak = $transaksi->pajak / 100 * ($transaksi->detail_transaksi[0]->paket->harga * $transaksi->detail_transaksi[0]->qty);
+        $total_diskon = ($transaksi->diskon / 100) * (($transaksi->detail_transaksi[0]->paket->harga * $transaksi->detail_transaksi[0]->qty) + $total_pajak);
+        $total_bayar = ($transaksi->detail_transaksi[0]->paket->harga * $transaksi->detail_transaksi[0]->qty + $total_pajak) - $total_diskon;
+        dd($total_bayar);
         $members = Member::all();
         $pakets = Paket::all();
         return view('admin.datamaster.transaksis.edit', [
