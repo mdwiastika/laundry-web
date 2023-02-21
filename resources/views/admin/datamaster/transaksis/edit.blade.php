@@ -85,18 +85,13 @@
                 <h5 class="text-danger mt-3">Pajak: {{ $transaksi->pajak }}%</h5>
                 <h5 class="text-danger">Diskon: {{ $transaksi->diskon }}% ({{ $transaksi->member->keterangan }})</h5>
                 <h4>Harga: Rp {{ number_format($transaksi->detail_transaksi[0]->paket->harga, 0, '.', ',') }} x <span class="text-primary">{{ $transaksi->detail_transaksi[0]->qty }} buah</span></h4>
-                @php
-                    $total_pajak = $transaksi->pajak / 100 * ($transaksi->detail_transaksi[0]->paket->harga * $transaksi->detail_transaksi[0]->qty);
-                    $total_diskon = ($transaksi->diskon / 100) * (($transaksi->detail_transaksi[0]->paket->harga * $transaksi->detail_transaksi[0]->qty) + $total_pajak);
-                    $total_bayar = ($transaksi->detail_transaksi[0]->paket->harga * $transaksi->detail_transaksi[0]->qty + $total_pajak) - $total_diskon;
-                @endphp
-                <h4 class="text-dark mt-3">Total: Rp {{ number_format( $total_bayar,0, '.', ',') }}</h4>
-                <input type="hidden" value="{{ $total_bayar }}" name="biaya_tambahan">
+                <h4 class="text-dark mt-3">Total: Rp {{ number_format( $total,0, '.', ',') }}</h4>
+                <input type="hidden" value="{{ $total }}" name="biaya_tambahan">
             </div>
               <!-- /.card-body -->
 
               <div class="card-footer">
-                <button type="submit" class="btn btn-warning text-white">Bayar</button>
+                <button type="submit" class="btn btn-warning text-white">{{ $transaksi->dibayar == 'dibayar' ? 'Edit' : 'Bayar'}}</button>
                 <a href="{{ route('transaksi.index') }}" class="btn btn-primary">Kembali</a>
               </div>
             </form>

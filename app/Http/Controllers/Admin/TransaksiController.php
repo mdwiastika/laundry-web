@@ -129,8 +129,8 @@ class TransaksiController extends Controller
     {
         $total_pajak = $transaksi->pajak / 100 * ($transaksi->detail_transaksi[0]->paket->harga * $transaksi->detail_transaksi[0]->qty);
         $total_diskon = ($transaksi->diskon / 100) * (($transaksi->detail_transaksi[0]->paket->harga * $transaksi->detail_transaksi[0]->qty) + $total_pajak);
-        $total_bayar = ($transaksi->detail_transaksi[0]->paket->harga * $transaksi->detail_transaksi[0]->qty + $total_pajak) - $total_diskon;
-        dd($total_bayar);
+        $hu = DB::select("call get_total_bayar(?)", array($transaksi->id));
+        $total = $hu[0]->total_bayar + $total_pajak - $total_diskon;
         $members = Member::all();
         $pakets = Paket::all();
         return view('admin.datamaster.transaksis.edit', [
@@ -140,6 +140,7 @@ class TransaksiController extends Controller
             'members' => $members,
             'pakets' => $pakets,
             'outlet_name' => auth()->user()->outlet->nama,
+            'total' => $total,
 
         ]);
     }
